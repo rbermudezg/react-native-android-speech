@@ -1,4 +1,4 @@
-React Native Android Text Top Speech
+React Native Android Text To Speech
 
 A react native android wrapper for Text To speech
 
@@ -32,8 +32,25 @@ dependencies {
 	compile project(':react-native-android-speech')
 }
 ```
+* for React Native Version >= 0.29, register module (in android/app/src/main/java/com/[app name]/MainApplication.java)
+```java
+...
+import com.mihir.react.tts.*; // Import package
 
-* register module (in MainActivity.java)
+public class MainApplication extends Application implements ReactApplication {
+	...
+	
+    @Override
+    protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+          ...,
+          new RCTTextToSpeechModule()
+      );
+    }
+}
+```
+
+* for React Native Version < 0.29, register module (in android/app/src/main/java/com/[app name]/MainActivity.java)
 
 ```java
 ...
@@ -60,7 +77,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         mReactRootView.startReactApplication(mReactInstanceManager, "YourProject", null);
 
         setContentView(mReactRootView);
-    }	
+    }
 }
 ```
 
@@ -69,11 +86,12 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 Currently there following functionality available. All below functions return Promise , with proper error codes.
 
 - getLocales
+- checkLanguageAvailability(language)
+- downloadTTSVoice()
 - speak(args)
 - isSpeaking
 - shutDown
 - stop
-
 
 ### Importing module
 
@@ -84,13 +102,39 @@ var tts = require('react-native-android-speech')
 ```
 
 ### getLocales()
-Returns all avialbale langauges from TTS make sure that exists in device also.
+Returns all available langauges from TTS make sure that exists in device also.
 
 ## Example 
 
 ```js
 tts.getLocales().then(locales=>{
     console.log(locales)
+});
+
+```
+
+### checkLanguageAvailability(language)
+returns whether a language is available on the device TTS engine
+
+## Example 
+
+```js
+tts.checkLanguageAvailability('ko').then(result => {
+    console.log('TTS voice availability for Korean is '+result);
+});
+
+```
+
+### downloadTTSVoice()
+opens the TTS download page on the device
+
+## Example 
+
+```js
+tts.checkLanguageAvailability('ko').then(result => {
+    if (!result) {
+        downloadTTSVoice();
+    }
 });
 
 ```
@@ -118,7 +162,7 @@ tts.speak({
 
 ### isSpeaking()
 
-This method will help to figure out wheter TTS engine is currently speaking or not.
+This method will help to figure out whether TTS engine is currently speaking or not.
 
 ## Example
 
